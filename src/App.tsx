@@ -1,38 +1,34 @@
-import { useState } from 'react'
-import './App.css'
-import ErrorMessage  from './components/error-message/error-message'
-import LoadButton  from './components/load-button/load-button'
-import TextMessage  from './components/text-message/text-message'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-interface AppProps {
-  message: string
-  error: string
-}
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+
+import BootstrapNavigationItem from './components/nav-item/nav-item'
+
+import HomePage  from './pages/home-page/home-page';
+import LoginPage  from './pages/login-page/login-page';
+import NotFoundPage  from './pages/notfound-page/notfound-page';
+import RegisterPage  from './pages/register-page/register-page';
 
 function App() {
-  const [state, setState] = useState<AppProps>({ message: '', error: ''})
-
-  const loadMessage = () => {
-    fetch('https://catfact.ninja/facts')
-      .then((res) => res.json())
-      .then(data => {
-        setState({ message: JSON.stringify(data), error: ''})
-      })
-      .catch((err) => {
-        setState({ message: '', error: err.message})
-      });
-  }
-
   return (
     <>
-    {console.log(state)}
-      <TextMessage message={state.message}></TextMessage>
-      <div>
-        <LoadButton onClickHandle={loadMessage}>
+      <Router>
+        <Navbar expand="lg" className="bg-body-tertiary">
+          <Nav activeKey="/">
+            <BootstrapNavigationItem path='/' title='Главная'/>
+            <BootstrapNavigationItem path='/login' title='Вход'/>
+            <BootstrapNavigationItem path='/register' title='Регистрация'/>
+          </Nav>
+        </Navbar>
 
-        </LoadButton>
-      </div>
-      <ErrorMessage message={state.error}></ErrorMessage>
+        <Routes>
+          <Route path='/' element={ <HomePage/>}></Route>
+          <Route path='/login' element={ <LoginPage/>}></Route>
+          <Route path='/register' element={ <RegisterPage/>}></Route>
+          <Route path='*' element={ <NotFoundPage/>}></Route> {/* Page 404 */}
+        </Routes>
+      </Router>
     </>
   )
 }
